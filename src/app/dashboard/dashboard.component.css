@@ -1,0 +1,694 @@
+
+/*table*/
+.demo-table{
+    width: 1900px;
+  }
+.mat-mdc-row .mat-mdc-cell {
+    cursor: pointer;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+    border-color: currentColor;
+}
+
+.demo-row-is-clicked {
+    font-weight: bold;
+}
+
+tr[draggable="true"] {
+  cursor: move;
+}
+
+tr[draggable="true"]:hover {
+  background-color: #d4eac1;
+}
+
+tr[draggable="true"]:hover td {
+  cursor: grabbing;
+}
+
+tr[draggable="true"][dragging="true"] {
+  background-color: #d9d9d9;
+}
+
+th[draggable="true"] {
+  cursor: move;
+  /* Add other styles to indicate that the column is draggable */
+}
+
+
+/* CSS for the pinned left column */
+.left-pinned {
+  position: sticky;
+  left: 0;
+  background-color: white;
+  z-index: 2; /* Ensure it's above the scrollable columns */
+}
+
+/* CSS for the pinned right column */
+.right-pinned {
+  position: sticky;
+  right: 0;
+  background-color: white;
+  z-index: 2; /* Ensure it's above the scrollable columns */
+}
+
+
+.export-button {
+  margin-right: 10px;
+ /* background-color: black !important;*/
+  color: #fff !important;
+  height: 45px;
+  display:flexbox;
+}
+
+/* Table Header*/
+.highlighted-header {
+    /*background-color: lightsalmon !important;*/
+    font-weight: bold;
+    color: #333;
+    height: 80px;
+}
+/*Header*/
+.expressive-header {
+  /*background-color: orchid;*/
+  padding: 20px;
+  text-align: center;
+}
+
+.expressive-header h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.expressive-header p {
+  font-size: 16px;
+  color: black;
+}
+
+/*Footer*/
+
+.footer {
+  background: orchid;
+  padding: 30px 0px;
+  font-family: 'Play', sans-serif;
+  text-align: center;
+}
+
+.footer .row {
+  width: 100%;
+  margin: 1% 0%;
+  padding: 0.6% 0%;
+  color: black;
+  font-size: 1em;
+}
+
+.footer .row a {
+  text-decoration: none;
+  color: black;
+  transition: 0.5s;
+}
+
+.footer .row a:hover {
+  color: #fff;
+}
+
+.footer .row ul {
+  width: 100%;
+}
+
+.footer .row ul li {
+  display: inline-block;
+  margin: 0px 30px;
+}
+
+.footer .row a i {
+  font-size: 2em;
+  margin: 0% 1%;
+}
+
+@media (max-width:720px) {
+  .footer {
+    text-align: left;
+    padding: 5%;
+  }
+
+  .footer .row ul li {
+    display: block;
+    margin: 10px 0px;
+    text-align: left;
+  }
+
+  .footer .row a i {
+    margin: 0% 3%;
+  }
+}
+
+
+/*Cell template*/
+.highlighted-cell {
+    background-color: lightcyan;
+    font-weight: bold;
+}
+
+/*Horizontal and vertical scrolling*/
+.table-container {
+  height: 430px;
+  width: 1300px;
+  max-width: 100%;
+  overflow: auto;
+}
+
+/* Explicitly add vertical scrolling for the table body */
+.table-container table tbody {
+  max-height: 100px; /* Set a maximum height for the tbody */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+/* Make the table responsive */
+.table-container {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+
+.demo-table th {    /*column resizing*/
+  resize: horizontal;
+  overflow: auto;
+
+}
+
+/* Adjust the table width as needed for smaller screens */
+@media (max-width: 768px) {
+  .table-container {
+    width: 100%;
+  }
+  .demo-table thead th {
+    min-width: auto; /* Remove the minimum width for header cells on smaller screens */
+  }
+}
+  
+.demo-table th {    /*column resizing*/
+    resize: horizontal;
+    overflow: auto;
+    
+  }
+  .demo-table th,
+  .demo-table td {
+    border: 1px solid #ddd; /* Add borders to table cells */
+    padding: 8px;
+    text-align: left;
+  }
+
+ /* Add a CSS class for selected rows */
+.selected-row {
+  background-color: pink; /* Choose your desired background color */
+}
+
+
+.context-menu-card {
+  position: absolute;
+  background-color: rgb(204, 248, 242); /* Change this to your desired card background color */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid #ddd; /* Change this to your desired border color */
+  border-radius: 4px;
+  z-index: 100; /* Ensure the context menu is above other content */
+  margin-left: 50px;
+}
+
+/* Style the list of export options */
+.context-menu-card ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.context-menu-card ul li {
+  padding: 8px 16px;
+  border-bottom: 1px solid #ddd; /* Add a border between items */
+  transition: background-color 0.3s;
+}
+
+.context-menu-card ul li:last-child {
+  border-bottom: none; /* Remove border for the last item */
+}
+
+.context-menu-card ul li button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.context-menu-card ul li button:hover {
+  background-color: #7fe6dd; /* Change this to your desired hover background color */
+}
+
+/* Style the icons in export options */
+.context-menu-card ul li i {
+  margin-right: 8px;
+}
+
+
+.theme-button:hover {
+  background-color: #0056b3; /* Change this to your desired hover color */
+}
+
+/* Style the theme submenu card */
+.theme-submenu-card {
+  position: absolute;
+  background-color: white; /* Change this to your desired card background color */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid #ddd; /* Change this to your desired border color */
+  border-radius: 4px;
+  z-index: 100; /* Ensure the submenu is above other content */
+}
+
+/* Style the list of theme options */
+.theme-submenu-card ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.theme-submenu-card ul li {
+  padding: 8px 16px;
+  border-bottom: 1px solid #ddd; /* Add a border between items */
+  transition: background-color 0.3s;
+}
+
+.theme-submenu-card ul li:last-child {
+  border-bottom: none; /* Remove border for the last item */
+}
+
+.theme-submenu-card ul li button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.theme-submenu-card ul li button:hover {
+  background-color: #f5f5f5; /* Change this to your desired hover background color */
+}
+
+/* Style the icons in theme options */
+.theme-submenu-card ul li i {
+  margin-right: 8px;
+}
+/* dashboard.component.css */
+
+/* Style the Apply and Cancel buttons */
+.theme-submenu-card button.apply-button{
+  background-color: #007bff !important;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+  font-size: 16px;
+}
+.theme-submenu-card button.cancel-button{
+  background-color:  #dc3545 !important;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+
+
+
+.ellipsis-icon {
+  cursor: pointer;
+  font-size: 20px; /* Adjust the size of the ellipsis icon as needed */
+  font-style:bold;
+  margin-left: 20px;
+}
+
+
+/* Info icon styles */
+.info-icon {
+  display: inline-block;
+  width: 24px; /* Adjust the size of the icon as needed */
+  height: 24px;
+  background-color: #007ACC; /* Icon background color (customize as needed) */
+  color: white; /* Icon color (customize as needed) */
+  text-align: center;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative; /* Add relative positioning */
+  margin-left: 20px;
+}
+
+.info-icon:hover {
+  background-color: #005B8E; /* Hover background color (customize as needed) */
+}
+
+/* Tooltip styles */
+.info-icon::after {
+  content: attr(title);
+  position: absolute;
+  visibility: hidden;
+  background-color: black; /* Background color for the tooltip */
+  color: white;
+  text-align: center;
+  border-radius: 4px;
+  padding: 5px;
+  z-index: 1;
+  white-space: nowrap;
+  top: 30px; /* Adjust the tooltip position as needed */
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.info-icon:hover::after {
+  visibility: visible;
+}
+
+/* Detail button styles */
+.detail-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* Arrow icon styles */
+.detail-icon {
+  font-size: 20px; /* Adjust the size of the icon as needed */
+  color: #007ACC; /* Icon color (customize as needed) */
+  margin-left: 20px;
+}
+
+
+
+/* Filter Saving*/
+/* Style for the input field */
+.filter-field {
+  /* Add your desired styles for the input field here */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-left:230px;
+}
+
+
+/* Style for the input field on focus (optional) */
+.filter-field:focus {
+  /* Add your desired styles for the focused input field here */
+  outline: none; /* Remove the default focus outline if desired */
+  border-color: #007bff; /* Change the border color on focus */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a box shadow on focus */
+}
+
+@media (max-width: 768px) {
+  .filter-field{
+    margin-left: 550px;
+  }
+}
+
+.recent-searches-container {
+  display: flex;
+  align-items: center;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-left: 920px;
+  margin-top: 21px;
+}
+.recent-search-divider {
+  height: 1px;
+  background-color: #0e0d0d;
+  margin-bottom: 10px;
+}
+.recent-searches {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.recent-search-button.highlighted {
+background-color: #007bff;
+color: #fff;
+}
+
+
+.recent-search-button {
+  margin-right: 5px;
+  border: none;
+  border-radius: 20px;
+  background-color: #f0f0f0;
+  padding: 5px 15px;
+  display: flex;
+  align-items: center;
+}
+
+.delete-icon {
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.predefined-button {
+  display: flex; 
+  flex-direction: column;
+  margin-bottom: 8px; /* Add a margin of 8px between each predefined button */
+}
+/* Add styles for the highlighted button */
+.predefined-button.highlighted {
+background-color: #007bff;; /* Replace with your desired highlight color */
+}
+
+/* Add styles for the cancel icon */
+.cancel-icon {
+  font-size: 20px; /* Adjust the size as needed */
+  cursor: pointer;
+  color: red; /* Adjust the color as needed */
+}
+
+
+/* Style the filter icon */
+.filter-icon {
+  cursor: pointer;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 20px;
+  color: black;
+  border-radius: 50%;
+  margin-left: 10px;
+  font-size: 14px;
+}
+
+/* Style the filter input field */
+input[type="text"] {
+  width: 150px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+
+
+.export-buttons {
+  position: relative;
+  display: inline-block;
+}
+
+
+
+.export-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.export-menu button {
+  display: block;
+  width: 100%;
+  padding: 5px 10px;
+  text-align: left;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.export-menu button:hover {
+  background-color: #ccc;
+}
+
+/*Conditional formatting*/
+.higher {
+  background-color: rgb(251, 251, 153); /* Change the background color to your preferred highlight color */
+  font-weight: bold; /* Optionally, make the text bold */
+}
+
+
+.freeze-icon {
+  font-size: 24px; /* Adjust the size as needed */
+}
+
+.locked {
+  color: #ff0000; /* Change the color to your preferred locked state color */
+}
+
+/* Add styles for the comment tooltip */
+.comment-tooltip {
+  position: absolute;
+  background-color: #f5bcf0;
+  border: 1px solid #ccc;
+  padding: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 200px; /* Adjust the maximum width as needed */
+  z-index: 1; /* Ensure the tooltip appears above other content */
+  top:5px;
+}
+
+/* Style the comment icon */
+.comment-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Style the comment icon (using Font Awesome) */
+.comment-button i {
+  font-size: 16px;
+  color: #007bff; /* Change the color as needed */
+  margin-left: 5px;
+}
+
+/* Adjust the tooltip position when hovering over the cell */
+.comment-tooltip.left {
+  left: -210px; /* Adjust the distance from the left edge */
+  top: 0;
+}
+
+.comment-tooltip.right {
+  left: 30px; /* Adjust the distance from the left edge */
+  top: 0;
+}
+
+/* Add a triangle pointer to the tooltip */
+.comment-tooltip:after {
+  content: '';
+  position: absolute;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent #100e0e;
+  left: 5px; /* Adjust the distance from the left edge */
+  top: -10px;
+  transform: translateY(-50%);
+}
+ /*summary*/
+ .summary-cards {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.summary-card {
+  width: 200px;
+  padding: 20px;
+  margin: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: aquamarine;
+  color: black;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+form {
+  display: flex; /* Initially hide the form */
+  margin-top: 20px; /* Add spacing between the button and form */
+}
+
+/* Style for form fields and labels */
+.form-group {
+  display: flex;
+  margin-bottom: 20px; /* Add spacing between form groups */
+}
+
+/* Style for the "Cancel" button within the form */
+.btn-secondary {
+  background-color: #e30c0c; /* Set your desired background color */
+  color: #fdeded; /* Set text color */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.btn-primary {
+  background-color: #3d90d8; /* Set your desired background color */
+  color: #fdeded; /* Set text color */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.error-text{
+  color: red;
+}
+
+.new-line {
+  clear: both; /* Forces the new line */
+}
+
+.summary-cards{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.summary-card {
+  width: 200px;
+  padding: 20px;
+  margin: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: aquamarine;
+  color: black;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+/*actions*/
+
+/* CSS for the card-like context menu container */
+.menu-card {
+  position: relative;
+  background-color: #ffffff; /* Background color of the card */
+  border: 1px solid #ccc; /* Border color */
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2); /* Box shadow for a raised effect */
+  z-index: 1; /* Ensure it's above other elements */
+  border-radius: 4px; /* Rounded corners */
+  padding: 8px; /* Padding inside the card */
+  width:80px;
+  height: 50px;
+}
+
+.menu-card ul {
+  list-style: none; /* Remove list bullets */
+  padding: 0; /* Remove default padding */
+  margin: 0; /* Remove default margin */
+}
+
+.menu-card li {
+  margin: 4px 0; /* Spacing between list items */
+}
+
+th[draggable="true"] {
+  cursor: grab;
+}
+
+/* Define styles for the dragged-over column */
+th[draggable="true"].dragged-over {
+  background-color: lightblue;
+}
+

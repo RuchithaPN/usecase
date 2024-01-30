@@ -1,0 +1,12 @@
+<div class="filter-field">
+    <label>Filter</label>
+    <input class="mat-input" (keyup)="applyFilter(input.value)" placeholder="Ex. ium" #input />
+
+  </div>
+  <button class="export-button" (click)="toggleRecentSearches()">
+    {{ showRecentSearches ? 'Hide Recent Searches' : 'Show Recent Searches' }}
+  </button>
+  <div *ngIf="showRecentSearches" class="recent-searches-container">
+    <!-- Recent searches content here -->
+  </div>
+  

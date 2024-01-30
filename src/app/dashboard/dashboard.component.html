@@ -1,0 +1,407 @@
+<!--Header Section-->
+<header [style.background]="selectedColor" class="expressive-header">
+    <h1>Welcome to the COVID-19 Statistics Dashboard</h1>
+    <p>Explore the latest data on cases, deaths, and recoveries worldwide.</p>
+</header>
+
+<div></div>
+<div class="container">
+    <div class="export-buttons">
+        <button class="export-button" [style.background]="selectedButtonColor" (click)="openThemeSubMenu()">
+            <i class="fas fa-eye"></i>&nbsp;
+            <span>Theme</span>
+          </button>
+        <button (click)="openContextMenu()" class="export-button" [style.background]="selectedButtonColor">
+            <i class="fa fa-download"></i>&nbsp;
+            <span>Export</span>
+        </button>
+        <button class="export-button" [style.background]="selectedButtonColor" (click)="toggleFormVisibility()">
+            {{ isFormVisible ? 'Cancel' : 'Add Record' }}
+        </button>
+
+        <button class="export-button" [style.background]="selectedButtonColor" (click)="toggleSummary()">Show
+            Summary</button>
+        <button class="export-button" [style.background]="selectedButtonColor" (click)="toggleRecentSearches()">
+            {{ showRecentSearches ? 'Hide Recent Searches' : 'Show Recent Searches' }}
+        </button>
+        <!-- <input type="file"  (change)="onFileSelected($event)" accept=".xlsx"> -->
+        <div>
+            <input type="file" (change)="onFileSelected($event)" accept=".xlsx">
+            <button (click)="onSubmit()">Upload</button>
+          </div>
+        <input type="text" class="filter-field" (keyup)="applyFilter($event)" placeholder="Search: Ex.ind" #input />
+    </div>
+<br><br>
+<div *ngIf="isContextMenuOpen" class="context-menu">
+    <div class="context-menu-card">
+        <ul>
+            <li><button (click)="exportToCSV()"><i class="fas fa-file-csv"></i> Export to CSV</button></li>
+            <li><button (click)="exportToPDF()"><i class="fas fa-file-pdf"></i> Export to PDF</button></li>
+            <li><button (click)="exportToExcel()"><i class="fas fa-file-excel"></i> Export to Excel</button></li>
+        </ul>
+    </div>
+</div>
+
+
+<div *ngIf="isThemeSubMenuOpen" class="theme-submenu-card">
+    <ul>
+      <li>
+        <button (click)="applyColor('heading')">
+          <i class="material-icons">color_lens</i>
+          <span>Heading Color</span>
+        </button>
+        <input type="color" [(ngModel)]="selectedColor" (click)="stopPropagation($event)" />
+      </li>
+      <li>
+        <button (click)="applyColor('button')">
+          <i class="material-icons">color_lens</i>
+          <span>Button Color</span>
+        </button>
+        <input type="color" [(ngModel)]="selectedButtonColor" (click)="stopPropagation($event)" />
+      </li>
+      <li>
+        <button (click)="applyColor('column')">
+          <i class="material-icons">color_lens</i>
+          <span>Column Color</span>
+        </button>
+        <input type="color" [(ngModel)]="selectedColumnColor" (click)="stopPropagation($event)" />
+      </li>
+      <li>
+        <button (click)="applyColors()" class="apply-button">Apply</button>
+        <button (click)="cancelChanges()" class="cancel-button">Cancel</button>
+      </li>
+    </ul>
+  </div>
+
+
+    <!-- Filter input field -->
+    <div *ngIf="showRecentSearches" class="recent-searches-container">
+        <div class="recent-searches-form">
+            <h3>Recent Searches:</h3>
+            <div class="recent-search-divider"></div>
+            <div class="recent-searches">
+                <button *ngFor="let search of recentSearches" class="recent-search-button"
+                    [class.highlighted]="search === highlightedSearch" (click)="filterBySearch(search)">
+                    {{ search }}
+                    <span class="delete-icon" (click)="deleteRecentSearch(search)">
+                        <span class="cancel-icon">×</span> <!--Use the cancel icon here -->
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show the summary section when showSummary is true -->
+    <div  class="summary-cards" *ngIf="showSummary">
+        <div class="summary-card">
+            <p>Total Cases: {{ summary.totalCases }}</p>
+        </div>
+        <div class="summary-card">
+            <p>Total Deaths: {{ summary.totalDeaths }}</p>
+        </div>
+        <div class="summary-card">
+            <p>Total Recovered: {{ summary.totalRecovered }}</p>
+        </div>
+        <div class="summary-card">
+            <p>Total Active: {{ summary.totalActive }}</p>
+        </div>
+        <button (click)="copySummaryToClipboard()">
+            <i class="fa fa-clipboard"></i> 
+        </button>
+    </div>
+
+    <!-- Add Record Form (conditionally based on isFormVisible) -->
+    <form #recordForm="ngForm" *ngIf="isFormVisible">
+        <div class="form-group">
+            <label for="country">Country</label>&nbsp;&nbsp;
+            <input type="text" class="form-control" id="country" name="country" [(ngModel)]="newRecord.country"
+                required>
+            <div *ngIf="recordForm.controls['country'].invalid && recordForm.controls['country'].touched"
+                class="error-text">
+                Country is required.
+            </div>
+        </div>&nbsp;&nbsp;
+
+        <div class="form-group">
+            <label for="continent">Continent</label>&nbsp;&nbsp;
+            <input type="text" class="form-control" id="continent" name="continent" [(ngModel)]="newRecord.continent"
+                required>
+            <div *ngIf="recordForm.controls['continent'].invalid && recordForm.controls['continent'].touched"
+                class="error-text">
+                Continent is required.
+            </div>
+        </div>&nbsp;&nbsp;
+
+        <div class="form-group">
+            <label for="cases">Cases</label>&nbsp;&nbsp;
+            <input type="number" class="form-control" id="cases" name="cases" [(ngModel)]="newRecord.cases" required>
+            <div *ngIf="recordForm.controls['cases'].invalid && recordForm.controls['cases'].touched"
+                class="error-text">
+                Cases is required and must be a number.
+            </div>
+        </div>&nbsp;&nbsp;
+
+        <div class="form-group">
+            <label for="deaths">Deaths</label>&nbsp;&nbsp;
+            <input type="number" class="form-control" id="deaths" name="deaths" [(ngModel)]="newRecord.deaths" required>
+            <div *ngIf="recordForm.controls['deaths'].invalid && recordForm.controls['deaths'].touched"
+                class="error-text">
+                Deaths is required and must be a number.
+            </div>
+        </div>&nbsp;&nbsp;
+        <!-- <div class="form-group">
+            <label for="Recovered">Recovered</label>
+            <input type="number" class="form-control" id="recovered" name="recovered" [(ngModel)]="newRecord.recovered"
+                required>
+            <div *ngIf="recordForm.controls['recovered'].invalid && recordForm.controls['recovered'].touched"
+                class="error-text">
+                Recovered is required and must be a number.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="critical">Critical</label>
+            <input type="number" class="form-control" id="critical" name="critical" [(ngModel)]="newRecord.critical"
+                required>
+            <div *ngIf="recordForm.controls['critical'].invalid && recordForm.controls['critical'].touched"
+                class="error-text">
+                Critical is required and must be a number.
+            </div>
+        </div> -->
+
+        <!-- Add similar form fields for other input fields -->
+
+        <div class="form-group">
+            <button class="btn btn-primary" (click)="addRecord()" [disabled]="recordForm.invalid">Add</button>&nbsp;
+            <button class="btn btn-secondary" (click)="toggleFormVisibility()">Cancel</button>
+        </div>
+    </form>
+
+    <div class="table-container">
+        <!-- <table *ngIf="filteredData.length > 0; else fullTable" [ngClass]="['demo-table', 'mat-elevation-z8']"> -->
+        <table class="mat-elevation-z8 demo-table">
+            <thead>
+                <tr>
+                    <th class="highlighted-header" [style.background]="selectedColumnColor">
+                        <input type="checkbox" (change)="selectAllRows($event)" [checked]="areAllRowsSelected()" />
+                    </th>
+                    <th class="left-pinned" [style.background]="selectedColumnColor"
+                        [ngClass]="['left-pinned', 'highlighted-header']" (click)="toggleSort('country')">
+                        <div class="filter-icon" (click)="toggleColumnFilter('country')">&#9776;</div>
+                        Country Name
+                        <span
+                            [innerHTML]="sortColumn === 'country' ? (sortDirection === 'asc' ? '&#9650;' : '&#9660;') : ''"
+                            style="color: rgb(255, 0, 0);"></span>
+                        <!-- Filter Input (initially hidden) -->
+                        <input *ngIf="isFilterOpen['country']" type="text" placeholder="Filter"
+                            [(ngModel)]="columnFilters['country']" (input)="filterData()"
+                            (blur)="filterInputBlur('country')">
+                    </th>
+                    <th class="highlighted-header" [style.background]="selectedColumnColor">
+                        <div class="filter-icon" (click)="toggleColumnFilter('continent')">&#9776;</div>Continent Name
+                        <!-- Filter Input (initially hidden) -->
+                        <input *ngIf="isFilterOpen['continent']" type="text" placeholder="Filter"
+                            [(ngModel)]="columnFilters['continent']" (input)="filterData()"
+                            (blur)="filterInputBlur('continent')">
+                    </th>
+                    <th class="highlighted-header" [style.background]="selectedColumnColor">
+                        <div class="filter-icon" (click)="toggleColumnFilter('cases')">&#9776;</div>Total Cases
+                        <input *ngIf="isFilterOpen['cases']" type="text" placeholder="Filter"
+                            [(ngModel)]="columnFilters['cases']" (input)="filterData()"
+                            (blur)="filterInputBlur('cases')">
+                    </th>
+                    <th class="highlighted-header" [style.background]="selectedColumnColor" >Total Deaths</th>
+                    <th class="highlighted-header" [style.background]="selectedColumnColor">Recovered</th>
+                    <th class="highlighted-header" [style.background]="selectedColumnColor">Active</th>
+                    <th class="highlighted-header" [style.background]="selectedColumnColor">Critical</th>
+                    <th class="highlighted-header" [style.background]="selectedColumnColor">Cases/1M</th>
+                    <th class="highlighted-header" [style.background]="selectedColumnColor">Deaths/1M</th>
+                    <th class="highlighted-header" [style.background]="selectedColumnColor">Population</th>
+                    <th class="highlighted-header" [style.background]="selectedColumnColor">Action</th>
+                    <th class="highlighted-header" [style.background]="selectedColumnColor">Info</th>
+                    <th class="highlighted-header" [style.background]="selectedColumnColor">Freeze</th>
+                    <th class="right-pinned" [style.background]="selectedColumnColor">Detail View</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of displayedData let i = index" [ngClass]="{ 'selected-row': isRowSelected(item) }"
+                (dragstart)="onDragStart($event, i)"
+                (dragover)="onDragOver($event, i)"
+                (dragleave)="onDragLeave($event)"
+                (drop)="onDrop($event, i)"
+                [draggable]="true"
+                (click)="selectCountry(item.country)">
+                    <td>
+                        <input type="checkbox" (change)="toggleRowSelection(item)" [checked]="item['selected']"  />
+                    </td>
+                    <td class="left-pinned" [ngClass]="{ 'selected-row': isRowSelected(item) }"
+                        (dblclick)="startEditing(item, 'country')" (mouseover)="showComment(item)"
+                        (mouseout)="hideComment(item)">
+                        <span *ngIf="!item['isEditing_country']">{{ item.country }}</span>
+                        <input *ngIf="item['isEditing_country']" type="text" [(ngModel)]="item['editValue_country']"
+                            (keyup.enter)="saveCell(item, 'country')">
+                        <button class="comment-button" (click)="addComment(item, 'country')">
+                            <i class="fa fa-comment"></i>
+                        </button>
+                        <div *ngIf="item.comment && item.showComment" class="comment-tooltip">
+                            {{ item.comment }}
+                        </div>
+                    </td>
+
+                    <td (dblclick)="startEditing(item, 'continent')">
+                        <span *ngIf="!item['isEditing_continent']">{{ item.continent }}</span>
+                        <input *ngIf="item['isEditing_continent']" type="text" [(ngModel)]="item['editValue_continent']"
+                            (keyup.enter)="saveCell(item, 'continent')">
+                    </td>
+                    <td [ngClass]="{ 'higher': item.cases > 200000 }" (dblclick)="startEditing(item, 'cases')">
+                        <span *ngIf="!item['isEditing_cases']">{{ item.cases }}</span>
+                        <input *ngIf="item['isEditing_cases']" type="text" [(ngModel)]="item['editValue_cases']"
+                            (keyup.enter)="saveCell(item, 'cases')">
+                    </td>
+                    <td (dblclick)="startEditing(item, 'deaths')">
+                        <span *ngIf="!item['isEditing_deaths']">{{ item.deaths }}</span>
+                        <input *ngIf="item['isEditing_deaths']" type="text" [(ngModel)]="item['editValue_deaths']"
+                            (keyup.enter)="saveCell(item, 'deaths')">
+                    </td>
+
+                    <td [ngClass]="{ 'higher': item.recovered > 1500000 }">{{ item.recovered }}</td>
+                    <td>{{ item.active }}</td>
+                    <td [ngClass]="{ 'higher': item.critical > 10 }"> {{ item.critical === 0 ? '#' : item.critical }}
+                    </td>
+                    <td>{{ item.casesPerOneMillion }}</td>
+                    <td [ngClass]="{ 'higher': item.deathsPerOneMillion > 100 }">{{ item.deathsPerOneMillion }}</td>
+                    <td [ngClass]="{'highlighted-cell': item.population}">{{ item.population }}
+                    </td>
+                    <td class="right-pinned">
+                        <button class="ellipsis-icon" (click)="toggleContextMenu(item)">&#8942;</button>
+                        <div *ngIf="item['showContextMenu']" class="menu-card">
+                            <ul>
+                                <li> <i class="fa fa-pencil">&nbsp;&nbsp;<button (click)="editRecord(item)">Edit</button></i></li>
+                                <li> <i class="fa fa-trash">&nbsp;&nbsp;<button (click)="deleteRecord(item)">Delete</button></i></li>
+                            </ul>
+                        </div>
+                    </td>
+                    
+                    <td>
+                        <div class="info-icon" [title]="item.country">
+                            <span>&#8505;</span> <!-- Unicode character for the info icon (you can customize it) -->
+                        </div>
+                    </td>
+                    <td>
+                        <button class="freeze-button" (click)="toggleFreezeRow(item)">
+                            <span class="freeze-icon" [class.locked]="item['isFrozen']">
+                                <i class="fa fa-lock"></i>
+                            </span>
+                        </button>
+                    </td>
+
+                    <td>
+                        <button class="detail-button" (click)="toggleRowDetail(item)">
+                            <span class="detail-icon">{{ isRowDetailVisible(item) ? '&#9650;' : '&#9660;' }}</span>
+                        </button>
+                        <div *ngIf="isRowDetailVisible(item)">
+                            <div class="row-details">
+                                <p><u>Details</u></p>
+                                <p>Country Name: {{ item.country }}</p>
+                                <p>Continent Name: {{ item.continent }}</p>
+                                <p>Cases: {{ item.cases }}</p>
+                                <p>Deaths: {{ item.deaths }}</p>
+                                <p>Recovered: {{ item.recovered }}</p>
+                                <p>Active: {{ item.active }}</p>
+                                <!-- Add other summary details as needed -->
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td [attr.colspan]="displayedData.length">
+                        <b>Total Rows: {{ data.length }}</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <b>Count of selected rows:{{ countSelectedRows() }}</b>
+                    </td>
+
+                </tr>
+            </tfoot>
+        </table>
+        <!-- ... your existing code ... -->
+        <app-paginator class="pagination" [pageSize]="pageSize" [currentPage]="currentPage" [totalPages]="totalPages"
+            (pageSizeChange)="changePageSize($event)" (pageChange)="goToPage($event)"></app-paginator>
+<br>
+        <!-- Pagination controls -->
+        <!-- <div class="pagination">
+        <label for="pageSize">Items per page:</label>
+        <select id="pageSize" [value]="pageSize" (change)="changePageSize($event)">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+        </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+        <button (click)="goToPage(1)" [disabled]="currentPage === 1">First</button>
+        <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+        <button (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages">Last</button>
+         </div> -->
+    </div>
+</div>
+<br>
+<div>
+    Selected Country will be logged here
+</div>
+
+<ul>
+    <b>
+        
+        <div *ngIf="selectedCountry">Clicked on Country: {{ selectedCountry }}</div>
+    </b>
+
+</ul>
+
+
+<!--FONT AWESOME-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!--GOOGLE FONTS-->
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Play&display=swap" rel="stylesheet">
+<footer>
+    <div [style.background]="selectedColor" class="footer">
+        <div class="row">
+            <a href="#"><i class="fa fa-facebook"></i></a>
+            <a href="#"><i class="fa fa-instagram"></i></a>
+            <a href="#"><i class="fa fa-youtube"></i></a>
+            <a href="#"><i class="fa fa-twitter"></i></a>
+        </div>
+
+        <div class="row">
+            <ul>
+                <li><a href="#">Contact us</a></li>
+                <li><a href="#">Our Services</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms & Conditions</a></li>
+                <li><a href="#">Help</a></li>
+            </ul>
+        </div>
+
+        <div class="row">
+            Copyright © 2021 - All rights reserved.
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Assuming you have a button with an ID "fetchDataButton"
+document.getElementById("fetchDataButton").addEventListener("click", function () {
+    fetch("http://localhost:65328/api/excel/data")
+        .then((response) => response.json())
+        .then((data) => {
+            // Handle the retrieved data and display it on your page
+            console.log(data); // You can use this data to populate a table or other UI elements
+        })
+        .catch((error) => {
+            console.error("Error fetching data:", error);
+        });
+});
+
+</script>

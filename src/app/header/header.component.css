@@ -1,0 +1,16 @@
+/*Header*/
+.expressive-header {
+    /*background-color: orchid;*/
+    padding: 20px;
+    text-align: center;
+}
+
+.expressive-header h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.expressive-header p {
+    font-size: 16px;
+    color: black;
+}
